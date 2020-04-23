@@ -1,0 +1,4 @@
+rootProject.name='EmbSysLab3'
+include ':SysLab31'
+include ':SysLab32'
+include ':SysLab33'
