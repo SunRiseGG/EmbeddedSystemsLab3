@@ -33,17 +33,25 @@ public class MainActivity extends AppCompatActivity {
                 double c = new Double(editC.getText().toString());
                 double d = new Double(editD.getText().toString());
                 double y = new Double(editY.getText().toString());
+                double mutation = 0.2;
                 Genetic geneticAlgorithmInstance = new Genetic();
-                resultOutput.setText(geneticAlgorithmInstance.count(a, b, c, d, y));
+                for(int i = 0; i < 10; i++) {
+                  resultOutput.append(geneticAlgorithmInstance.count(a, b, c, d, y, mutation));
+                  mutation += 0.2;
+                }
             }
         });
     }
 
     private class Genetic {
-        private int maxIteration = 1000;
-        private double mutation = 0.5;
+        private int maxIteration = 10000;
+        private double mutation = 0;
+        private int prevIteration = maxIteration;
+        private int currIteration = 0;
 
-        private String count(double a, double b, double c, double d, double y) {
+        private String count(double a, double b, double c, double d, double y, double mut) {
+            mutation = mut;
+            maxIteration = (int) Math.round(maxIteration * mut);
             Random randomGenerator = new Random();
             ArrayList<ArrayList<Double>> population = new ArrayList<>();
 
@@ -54,12 +62,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            for (int it = 0; it < maxIteration; it++) {
+            int it = 0;
+            for (; it < maxIteration; it++) {
                 Double[] values = new Double[4];
                 Double percent = 0.0;
                 for (int i = 0; i < population.size(); i++) {
                     values[i] = countY(population.get(i), a, b, c, d);
                     double delta = values[i] - y;
+                    currIteration = it;
                     if (delta == 0.0) {
                         return formatResult(population.get(i));
                     }
@@ -113,13 +123,18 @@ public class MainActivity extends AppCompatActivity {
                     individual = unit;
                 }
             }
-            return "Too many iterations! Closest result:\n" + formatResult(individual);
+            currIteration = it;
+            return formatResult(individual);
         }
 
         String formatResult(ArrayList<Double> x) {
             StringBuffer result = new StringBuffer();
             for (int i = 0; i < x.size(); i++) {
-                result.append("x" + (i + 1) + " = " + ((double) Math.round(x.get(i) * 100) / 100) + "; ");
+                result.append("x" + (i + 1) + " = " + ((double) Math.round(x.get(i) * 100) / 100) + "\n");
+            }
+            if (prevIteration > currIteration) {
+                prevIteration = currIteration;
+                result.append("Мутація:" + Double.toString(mutation) + "\nІтерацій: " + Integer.toString(prevIteration) + "\n");
             }
             return result.toString();
         }
