@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -171,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             }
         }
+        Toast iterationsMessage = Toast.makeText(MainActivity.this, "Iterations:" + Integer.toString(iteration), Toast.LENGTH_LONG);
+        iterationsMessage.show();
         resultOutputString += "w1 = " + ((double) Math.round(w1 * 100) / 100) + "; w2 = " + ((double) Math.round(w2 * 100) / 100);
         return resultOutputString;
     }
